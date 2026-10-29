@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>함수 방정식(Functional Equations) 심화 탐구</title>
+    
+    <!-- 수식 렌더링을 위한 MathJax -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <!-- 3D 및 2D 그래프 렌더링을 위한 Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
+    
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; max-width: 1000px; margin: 0 auto; padding: 20px; background-color: #f4f6f9; }
+        h1 { color: #1a252f; text-align: center; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        h2 { color: #2980b9; margin-top: 30px; }
+        h3 { color: #2c3e50; }
+        .content-box { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; border-left: 5px solid #3498db; }
+        .technique-box { background: #fffde7; padding: 15px; border-radius: 8px; margin: 10px 0; border: 1px solid #fff59d; }
+        .interactive-panel { background: #2c3e50; color: white; padding: 25px; border-radius: 10px; margin-bottom: 20px; display: grid; gap: 15px; }
+        .control-group { display: flex; flex-direction: column; gap: 5px; }
+        select, input[type="range"] { padding: 10px; border-radius: 6px; border: none; font-size: 15px; cursor: pointer; }
+        #plot3d { width: 100%; height: 650px; background: white; border-radius: 10px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+        code { background: #eee; padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+
+    <h1>함수 방정식(Functional Equations) 심화 탐구 및 시각화</h1>
+    
+    <div class="content-box">
+        <h2>1. 함수 방정식과 항등식의 본질</h2>
+        <p>함수 방정식은 임의의 정의역 내 원소 \( x, y \)에 대하여 <strong>항상 성립하는 '항등식(Identity)'</strong>입니다. 특정 \( x \) 값을 찾는 일반 방정식과 달리, 이 항등식을 만족하는 <strong>함수 \( f \)의 형태(구조)</strong> 자체를 찾는 것이 목적입니다.</p>
+    </div>
+
+    <div class="content-box">
+        <h2>2. 핵심 풀이 기법 (해석적 & 대수적 접근)</h2>
+        <p>함수 방정식이 모든 \( x, y \)에 대해 성립한다는 점을 이용하여, 다음과 같은 다양한 대수적 조작을 가해 함수를 찾아냅니다.</p>
+        
+        <div class="technique-box">
+            <h3>① 특수값 대입 (Substitution of Specific Values)</h3>
+            <p>가장 강력하고 기초적인 기법입니다. \( x=0, y=0 \), 혹은 \( y=x, y=-x \) 등 임의의 관계식을 대입하여 2변수 방정식을 1변수 방정식이나 상수로 단순화시킵니다.<br>
+            <em>예: 코시 방정식 \( f(x+y) = f(x)+f(y) \)에 \( x=0, y=0 \) 대입 ➔ \( f(0) = f(0)+f(0) \implies f(0) = 0 \)</em></p>
+        </div>
+
+        <div class="technique-box">
+            <h3>② 치환 (Substitution & Change of Variables)</h3>
+            <p>복잡한 항등식에서 \( u = x+y, v = x-y \) 등으로 새로운 변수를 정의하여 식의 형태를 우리가 아는 기본 방정식 꼴로 바꾸어 푸는 기법입니다.</p>
+        </div>
+
+        <div class="technique-box">
+            <h3>③ 대칭성(Symmetry) 및 교환법칙 이용</h3>
+            <p>좌변이 \( x \)와 \( y \)를 바꾸어도 식의 값이 같은 대칭형이라면, 우변 역시 \( f(x)+f(y) = f(y)+f(x) \) 처럼 교환법칙이 성립함을 이용해 새로운 조건을 유도해냅니다.</p>
+        </div>
+
+        <div class="technique-box">
+            <h3>④ 단사/전사/역함수 (Injectivity, Surjectivity, Inverses)</h3>
+            <p>만약 식을 조작하여 \( f(x) = f(y) \implies x = y \)임을 증명하면 함수는 일대일 함수(단사)가 됩니다. 이 성질을 이용해 괄호 안의 식을 직접 비교하거나, 역함수를 씌워 변수들을 외부로 빼내는 테크닉을 사용합니다.</p>
+        </div>
+    </div>
+
+    <div class="content-box" style="border-left-color: #9b59b6;">
+        <h2>3. 함수 방정식의 사회적 의의</h2>
+        <ul>
+            <li><strong>컴퓨터 과학 & 통신:</strong> 클로드 섀넌은 정보량의 결합성에 대한 함수 방정식을 풀어 <strong>엔트로피 공식 \( H = -\sum p \log p \)</strong>를 유도, 현대 IT 통신망의 기초를 세웠습니다.</li>
+            <li><strong>경제학 & 인공지능:</strong> 시간에 따른 가치 변화를 항등식으로 표현한 <strong>벨만 방정식(Bellman Equation)</strong>은 거시경제 정책 결정과 AI의 강화학습(알파고 등)의 뼈대입니다.</li>
+        </ul>
+    </div>
+
+    <h2 style="text-align: center; margin-top: 40px;">🧪 인터랙티브 3D 함수 방정식 실험실</h2>
+    <p style="text-align: center;">방정식을 선택하고, <strong>'특수값 대입(치환)'</strong>을 조작해 보세요. 2변수(x,y)의 3D 표면이 어떻게 1변수의 1D 선(Red Line)으로 단순화되는지 관찰할 수 있습니다.</p>
+    
+    <div class="interactive-panel">
+        <div class="control-group">
+            <label for="eqSelect"><strong>1. 함수 방정식 종류 선택:</strong></label>
+            <select id="eqSelect">
+                <option value="cauchy">코시 선형 방정식: f(x+y) = f(x)+f(y)  ➔  f(x) = c·x</option>
+                <option value="quadratic">이차 함수 방정식: f(x+y)+f(x-y) = 2f(x)+2f(y)  ➔  f(x) = c·x²</option>
+                <option value="exponential">지수 방정식: f(x+y) = f(x)f(y)  ➔  f(x) = aˣ</option>
+            </select>
+        </div>
+        
+        <div class="control-group">
+            <label for="substituteSelect" style="color:#f1c40f;"><strong>2. 항등식 성질을 이용한 대입/치환 조작 (핵심 풀이 기법):</strong></label>
+            <select id="substituteSelect">
+                <option value="none">대입 안 함 (전체 3D 표면 보기)</option>
+                <option value="y_eq_0">y = 0 대입 (x축 절편 단면 보기)</option>
+                <option value="y_eq_x">y = x 대입 (동일 변수 치환)</option>
+                <option value="y_eq_neg_x">y = -x 대입 (역부호 치환, f(0) 유도용)</option>
+            </select>
+        </div>
+
+        <div class="control-group">
+            <label for="paramSlider"><strong id="paramLabel">3. 함수 계수(c 또는 a) 조절: 1.0</strong></label>
+            <input type="range" id="paramSlider" min="-3" max="3" step="0.2" value="1">
+        </div>
+    </div>
+
+    <!-- 3D Plotly 그래프 렌더링 영역 -->
+    <div id="plot3d"></div>
+
+    <script>
+        // 변수 범위 (-4 ~ 4) 생성
+        const size = 41;
+        const x_vals = [];
+        const y_vals = [];
+        for(let i=0; i<size; i++) {
+            x_vals.push(-4 + (8 * i / (size - 1)));
+            y_vals.push(-4 + (8 * i / (size - 1)));
+        }
+
+        function updatePlot() {
+            const eqType = document.getElementById('eqSelect').value;
+            const substitute = document.getElementById('substituteSelect').value;
+            const param = parseFloat(document.getElementById('paramSlider').value);
+            
+            let z_surface = [];
+            let title = '';
+            
+            // --- 1. 표면(Surface) 데이터 생성 (방정식 좌변 z = f(x, y)) ---
+            let a = Math.pow(1.5, param); // 지수함수용
+            
+            if(eqType === 'cauchy') {
+                document.getElementById('paramLabel').innerText = `3. 함수 계수 (기울기 c): ${param.toFixed(1)}`;
+                title = `좌변 z = f(x+y) = c(x+y) [c=${param.toFixed(1)}]`;
+                for(let i=0; i<size; i++) {
+                    let row = [];
+                    for(let j=0; j<size; j++) { row.push(param * (x_vals[j] + y_vals[i])); }
+                    z_surface.push(row);
+                }
+            } else if (eqType === 'quadratic') {
+                document.getElementById('paramLabel').innerText = `3. 함수 계수 (이차항 c): ${param.toFixed(1)}`;
+                title = `좌변 중 한 항 z = c(x+y)² [c=${param.toFixed(1)}]`;
+                for(let i=0; i<size; i++) {
+                    let row = [];
+                    for(let j=0; j<size; j++) { row.push(param * Math.pow(x_vals[j] + y_vals[i], 2)); }
+                    z_surface.push(row);
+                }
+            } else if (eqType === 'exponential') {
+                document.getElementById('paramLabel').innerText = `3. 함수 계수 (밑 a): ${a.toFixed(2)}`;
+                title = `좌변 z = a^(x+y) [a=${a.toFixed(2)}]`;
+                for(let i=0; i<size; i++) {
+                    let row = [];
+                    for(let j=0; j<size; j++) {
+                        let val = Math.pow(a, x_vals[j] + y_vals[i]);
+                        if(val > 40) val = 40; // 시각적 한계치
+                        row.push(val);
+                    }
+                    z_surface.push(row);
+                }
+            }
+
+            const surfaceTrace = {
+                z: z_surface,
+                x: x_vals,
+                y: y_vals,
+                type: 'surface',
+                colorscale: 'IceFire',
+                opacity: substitute === 'none' ? 1.0 : 0.4, // 치환 시 표면을 반투명하게
+                name: '전체 항등식 표면',
+                showscale: false
+            };
+
+            const plotData = [surfaceTrace];
+
+            // --- 2. 대입/치환(Substitution)에 따른 1D 선(Line) 추출 ---
+            if (substitute !== 'none') {
+                let x_line = [];
+                let y_line = [];
+                let z_line = [];
+
+                for (let i = 0; i < size; i++) {
+                    let xv = x_vals[i];
+                    let yv = 0;
+                    
+                    if (substitute === 'y_eq_0') yv = 0;
+                    else if (substitute === 'y_eq_x') yv = xv;
+                    else if (substitute === 'y_eq_neg_x') yv = -xv;
+
+                    x_line.push(xv);
+                    y_line.push(yv);
+
+                    // 해당 (x, y) 좌표의 z값 계산
+                    let zv = 0;
+                    if(eqType === 'cauchy') zv = param * (xv + yv);
+                    else if (eqType === 'quadratic') zv = param * Math.pow(xv + yv, 2);
+                    else if (eqType === 'exponential') {
+                        zv = Math.pow(a, xv + yv);
+                        if(zv > 40) zv = 40;
+                    }
+                    z_line.push(zv);
+                }
+
+                const lineTrace = {
+                    x: x_line,
+                    y: y_line,
+                    z: z_line,
+                    type: 'scatter3d',
+                    mode: 'lines',
+                    line: { color: '#e74c3c', width: 10 },
+                    name: '치환된 1D 함수선'
+                };
+                plotData.push(lineTrace);
+                title += `<br><span style="color:#e74c3c; font-size:0.8em;">적용된 대입 조건: ${substitute.replace('y_eq_0','y=0').replace('y_eq_x','y=x').replace('y_eq_neg_x','y=-x')}</span>`;
+            }
+
+            const layout = {
+                title: title,
+                autosize: true,
+                scene: {
+                    xaxis: { title: 'x축' },
+                    yaxis: { title: 'y축' },
+                    zaxis: { title: 'z축' },
+                    camera: { eye: {x: 1.5, y: 1.5, z: 1.0} }
+                },
+                margin: { l: 0, r: 0, b: 0, t: 60 },
+                legend: { x: 0, y: 1 }
+            };
+
+            Plotly.react('plot3d', plotData, layout);
+        }
+
+        // 이벤트 리스너 등록
+        document.getElementById('eqSelect').addEventListener('change', updatePlot);
+        document.getElementById('substituteSelect').addEventListener('change', updatePlot);
+        document.getElementById('paramSlider').addEventListener('input', updatePlot);
+
+        // 초기 그래프 렌더링
+        updatePlot();
+    </script>
+</body>
+</html>
